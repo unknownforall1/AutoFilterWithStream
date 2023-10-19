@@ -716,7 +716,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                             InlineKeyboardButton("Hᴏᴡ Tᴏ Vᴇʀɪғʏ", url=HOW_TO_VERIFY)
                         ]]
                         await client.send_message(
-                            chat_id=query.from_user.id,
+                            chat_id=CHANNELS,
                             text="<b>Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪғɪᴇᴅ!\nKɪɴᴅʟʏ ᴠᴇʀɪғʏ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ Sᴏ ᴛʜᴀᴛ ʏᴏᴜ ᴄᴀɴ ɢᴇᴛ ᴀᴄᴄᴇss ᴛᴏ ᴜɴʟɪᴍɪᴛᴇᴅ ᴍᴏᴠɪᴇs ᴜɴᴛɪʟ 12 ʜᴏᴜʀs ғʀᴏᴍ ɴᴏᴡ !</b>",
                             protect_content=True if ident == 'checksubp' else False,
                             disable_web_page_preview=True,
@@ -726,7 +726,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         return await query.answer("Hᴇʏ, Yᴏᴜ ʜᴀᴠᴇ ɴᴏᴛ ᴠᴇʀɪғɪᴇᴅ ᴛᴏᴅᴀʏ. Yᴏᴜ ʜᴀᴠᴇ ᴛᴏ ᴠᴇʀɪғʏ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ. Cʜᴇᴄᴋ ᴍʏ PM ᴛᴏ ᴠᴇʀɪғʏ ᴀɴᴅ ɢᴇᴛ ғɪʟᴇs !", show_alert=True)
                     else:
                         await client.send_cached_media(
-                            chat_id=query.from_user.id,
+                            chat_id=CHANNELS,
                             file_id=file_id,
                             caption=f_caption,
                             protect_content=True if ident == "filep" else False,
@@ -796,7 +796,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             )
             return
         await client.send_cached_media(
-            chat_id=query.from_user.id,
+            chat_id=CHANNELS,
             file_id=file_id,
             caption=f_caption,
             protect_content=True if ident == 'checksubp' else False,
@@ -1794,7 +1794,7 @@ async def auto_filter(client, msg, spoll=False):
             hmm = await message.reply_photo(photo=poster, caption=cap[:1024], reply_markup=InlineKeyboardMarkup(btn))
             try:
                 if settings['auto_delete']:
-                    await asyncio.sleep(600)
+                    await asyncio.sleep(6660000)
                     await hmm.delete()
                     await message.delete()
             except KeyError:
