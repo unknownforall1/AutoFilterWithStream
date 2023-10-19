@@ -87,7 +87,7 @@ async def start(client, message):
             except (IndexError, ValueError):
                 btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
         await client.send_message(
-            chat_id=LOG_CHANNEL,
+            chat_id=message.from_user.id,
             text="**Yᴏᴜ ᴀʀᴇ ɴᴏᴛ ɪɴ ᴏᴜʀ Bᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟ ɢɪᴠᴇɴ ʙᴇʟᴏᴡ sᴏ ʏᴏᴜ ᴅᴏɴ'ᴛ ɢᴇᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ғɪʟᴇ...\n\nIғ ʏᴏᴜ ᴡᴀɴᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ғɪʟᴇ, ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ '❆ Jᴏɪɴ Oᴜʀ Bᴀᴄᴋ-Uᴘ Cʜᴀɴɴᴇʟ ❆' ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴀɴᴅ ᴊᴏɪɴ ᴏᴜʀ ʙᴀᴄᴋ-ᴜᴘ ᴄʜᴀɴɴᴇʟ, ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ '↻ Tʀʏ Aɢᴀɪɴ' ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ...\n\nTʜᴇɴ ʏᴏᴜ ᴡɪʟʟ ɢᴇᴛ ᴛʜᴇ ᴍᴏᴠɪᴇ ғɪʟᴇs...**",
             reply_markup=InlineKeyboardMarkup(btn),
             parse_mode=enums.ParseMode.MARKDOWN
@@ -119,7 +119,7 @@ async def start(client, message):
         file_id = data
         pre = ""
     if data.split("-", 1)[0] == "BATCH":
-        sts = await message.reply("<b>Pʟᴇᴀsᴇ ..</b>")
+        sts = await message.reply("<b>Pʟᴇᴀsᴇ ᴡᴀɪᴛ...</b>")
         file_id = data.split("-", 1)[1]
         msgs = BATCH_FILES.get(file_id)
         if not msgs:
@@ -145,22 +145,24 @@ async def start(client, message):
             if f_caption is None:
                 f_caption = f"{title}"
             try:
-                await client.send_cached_media(LOG_CHANNEL,
+                await client.send_cached_media(
+                    chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
                     reply_markup=InlineKeyboardMarkup(
-                   [
+                        [
                          [ 
                             InlineKeyboardButton('Fᴀsᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ', callback_data=f'generate_stream_link:{file_id}') #Don't change anything without contacting me @LazyDeveloperr
                          ]
-                   ]
+                        ]
                     )
                 )
             except Exception as e:
                 await asyncio.sleep(e.x)
                 logger.warning(f"Floodwait of {e.x} sec.")
-                await client.send_cached_media(LOG_CHANNEL,
+                await client.send_cached_media(
+                    chat_id=message.from_user.id,
                     file_id=msg.get("file_id"),
                     caption=f_caption,
                     protect_content=msg.get('protect', False),
@@ -179,7 +181,7 @@ async def start(client, message):
         await sts.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
-        sts = await message.reply("<b>Pʟᴇᴀsᴇ ᴡᴀɪᴛ.2..</b>")
+        sts = await message.reply("<b>Pʟᴇᴀsᴇ ᴡᴀɪᴛ...</b>")
         b_string = data.split("-", 1)[1]
         decoded = (base64.urlsafe_b64decode(b_string + "=" * (-len(b_string) % 4))).decode("ascii")
         try:
@@ -202,10 +204,10 @@ async def start(client, message):
                     file_name = getattr(media, 'file_name', '')
                     f_caption = getattr(msg, 'caption', file_name)
                 try:
-                    await msg.copy(message.LOG_CHANNEL, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
+                    await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
                 except FloodWait as e:
                     await asyncio.sleep(e.x)
-                    await msg.copy(message.LOG_CHANNEL, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
+                    await msg.copy(message.chat.id, caption=f_caption, protect_content=True if protect == "/pbatch" else False)
                 except Exception as e:
                     logger.exception(e)
                     continue
@@ -227,7 +229,7 @@ async def start(client, message):
         userid = data.split("-", 2)[1]
         token = data.split("-", 3)[2]
         fileid = data.split("-", 3)[3]
-        if str(message.LOG_CHANNEL) != str(LOG_CHANNEL):
+        if str(message.from_user.id) != str(userid):
             return await message.reply_text(
                 text="<b>Iɴᴠᴀʟɪᴅ ʟɪɴᴋ ᴏʀ Exᴘɪʀᴇᴅ ʟɪɴᴋ !</b>",
                 protect_content=True if PROTECT_CONTENT else False
@@ -277,7 +279,7 @@ async def start(client, message):
                 )
                 return
             msg = await client.send_cached_media(
-                chat_id=LOG_CHANNEL,
+                chat_id=message.from_user.id,
                 file_id=file_id,
                 protect_content=True if pre == 'filep' else False,
                 reply_markup=InlineKeyboardMarkup(
@@ -327,7 +329,7 @@ async def start(client, message):
         )
         return
     await client.send_cached_media(
-        chat_id=LOG_CHANNEL,
+        chat_id=message.from_user.id,
         file_id=file_id,
         caption=f_caption,
         protect_content=True if pre == 'filep' else False,
